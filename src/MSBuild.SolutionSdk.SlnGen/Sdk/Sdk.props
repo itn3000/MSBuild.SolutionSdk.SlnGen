@@ -9,6 +9,6 @@
     </ItemGroup>
     <PropertyGroup>
         <SolutionFile>$(MSBuildProjectName).sln</SolutionFile>
-        <SlnGenAssemblyFilePath>$(MSBuildThisFileDirectory)../Tasks/MSBuild.SolutionSdk.SlnGen.dll</SlnGenAssemblyFilePath>
+        <SlnGenAssemblyFilePath>$(MSBuildThisFileDirectory)../Tasks/netstandard2.0/MSBuild.SolutionSdk.SlnGen.dll</SlnGenAssemblyFilePath>
     </PropertyGroup>
 </Project>
