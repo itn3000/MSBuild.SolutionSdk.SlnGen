@@ -1,6 +1,4 @@
-<Project>
-  <Import Project="..\..\src\MSBuild.SolutionSdk\Sdk\Sdk.props" />
-
+<Project Sdk="MSBuild.SolutionSdk/0.1.0">
   <PropertyGroup>
     <SolutionSdkTasksAssembly>$(MSBuildThisFileDirectory)..\..\src\bin\Debug\MSBuild.SolutionSdk.dll</SolutionSdkTasksAssembly>
   </PropertyGroup>
@@ -31,6 +29,4 @@
       <SolutionFolder>sub1/sub2</SolutionFolder>
     </SolutionItem>
   </ItemGroup>
-
-  <Import Project="..\..\src\MSBuild.SolutionSdk\Sdk\Sdk.targets" />
 </Project>
