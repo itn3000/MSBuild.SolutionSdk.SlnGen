@@ -1,0 +1,34 @@
+<Project DefaultTargets="SlnGen">
+    <PropertyGroup>
+        <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    </PropertyGroup>
+
+    <UsingTask TaskName="GenerateSln" AssemblyFile="$(SlnGenAssemblyFilePath)"/>
+    <UsingTask TaskName="CollectProjectMetadata" AssemblyFile="$(SlnGenAssemblyFilePath)"/>
+    <UsingTask TaskName="CollectSolutionItem" AssemblyFile="$(SlnGenAssemblyFilePath)"/>
+    <Target Name="CollectProjectMetadata" Returns="@(_ProjectMetaData)">
+        <CollectProjectMetadata
+            SlnProjects="@(SlnProj)"
+            Configurations="@(SolutionConfiguration)"
+            Platforms="@(SolutionPlatform)"
+        >
+            <Output TaskParameter="OutputProjects" ItemName="_ProjectMetaData"/>
+        </CollectProjectMetadata>
+    </Target>
+    <Target Name="CollectSolutionItems" Returns="@(_SolutionItem)">
+        <CollectSolutionItem SlnProjects="@(SlnProj)">
+            <Output TaskParameter="OutputSolutionItems" ItemName="_SolutionItem"/>
+        </CollectSolutionItem>
+    </Target>
+    <Target Name="SlnGen" DependsOnTargets="CollectProjectMetadata;CollectSolutionItems">
+        <GenerateSln
+            ProjectName="$(SolutionFile)"
+            ProjectDirectory="$(MSBuildProjectDirectory)"
+            ProjectMetaData="@(_ProjectMetaData)"
+            AdditionalProperties="$(AdditionalProperties)"
+            SolutionItems="@(_SolutionItem)"
+            VisualStudioVersion="$(VisualStudioVersion)"
+            MinVisualStudioVersion="$(MinVisualStudioVersion)"
+            />
+    </Target>
+</Project>

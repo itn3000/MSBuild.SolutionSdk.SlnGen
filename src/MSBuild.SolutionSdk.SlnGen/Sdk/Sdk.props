@@ -1,0 +1,14 @@
+<Project>
+    <PropertyGroup>
+        <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <SolutionConfiguration Include="Debug;Release"/>
+        <SolutionPlatform Include="AnyCPU"/>
+    </ItemGroup>
+    <PropertyGroup>
+        <SolutionFile>$(MSBuildProjectName).sln</SolutionFile>
+        <SlnGenAssemblyFilePath>$(MSBuildThisFileDirectory)../Tasks/MSBuild.SolutionSdk.SlnGen.dll</SlnGenAssemblyFilePath>
+    </PropertyGroup>
+</Project>
