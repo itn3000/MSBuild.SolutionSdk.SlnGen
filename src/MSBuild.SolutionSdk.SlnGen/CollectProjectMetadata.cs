@@ -67,7 +67,9 @@ namespace MSBuild.SolutionSdk.Tasks
                         {
                             var projectConfiguration = projectItem.GetMetadataValue("Configuration");
                             var projectPlatform = projectItem.GetMetadataValue("Platform");
-                            var projectInstance = ProjectUtil.LoadProject(projectItem, projectConfiguration, projectPlatform);
+                            var projectPath = Path.IsPathRooted(projectItem.EvaluatedInclude) ? projectItem.EvaluatedInclude :
+                                Path.Combine(Path.GetDirectoryName(slnProjectInstance.FullPath), projectItem.EvaluatedInclude);
+                            var projectInstance = ProjectUtil.LoadProject(projectPath.Replace('\\', Path.DirectorySeparatorChar), projectConfiguration, projectPlatform);
                             yield return CreateProjectMetadata(slnproj, projectInstance, projectItem, configuration.ItemSpec, platform.ItemSpec);
                         }
                     }

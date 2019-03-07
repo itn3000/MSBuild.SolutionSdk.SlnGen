@@ -4,7 +4,6 @@
     <Title>Visual Studio solution file generator from MSBuild.SolutionSdk</Title>
     <TargetFramework>netstandard2.0</TargetFramework>
     <VersionPrefix>0.1.0</VersionPrefix>
-    <BuildOutputTargetFolder>Tasks</BuildOutputTargetFolder>
     <PackageId>MSBuild.SolutionSdk.SlnGen</PackageId>
     <PackageProjectUrl>https://github.com/itn3000/MSBuild.SolutionSdk.SlnGen</PackageProjectUrl>
     <Description>MSBuild SDK package for generating solution file from MSBuild.SolutionSdk(slnproj)</Description>
@@ -12,6 +11,8 @@
     <Authors>Itn3000</Authors>
     <Copyright>Copytright(C) 2019 Yusuke Ito</Copyright>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageType>MSBuildSdk</PackageType>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
   </PropertyGroup>
   <ItemGroup>
     <None Update="Sdk\Sdk.props" Pack="true" PackagePath="\" />

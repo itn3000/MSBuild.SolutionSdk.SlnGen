@@ -15,23 +15,13 @@ namespace MSBuild.SolutionSdk.Tasks
     {
         public static Project LoadProject(ITaskItem slnproj, string configuration = null, string platform = null)
         {
-            var popt = new ProjectOptions();
-            if (configuration != null || platform != null)
-            {
-                popt.GlobalProperties = popt.GlobalProperties ?? new Dictionary<string, string>();
-                if (configuration != null)
-                {
-                    popt.GlobalProperties["Configuration"] = configuration;
-                }
-                if (platform != null)
-                {
-                    popt.GlobalProperties["Platform"] = platform;
-                }
-            }
-            var collection = new ProjectCollection(popt.GlobalProperties);
-            return collection.LoadProject(slnproj.ItemSpec.Replace('\\', Path.DirectorySeparatorChar));
+            return LoadProject(slnproj.ItemSpec.Replace('\\', Path.DirectorySeparatorChar));
         }
         public static Project LoadProject(ProjectItem item, string configuration = null, string platform = null)
+        {
+            return LoadProject(item.EvaluatedInclude.Replace('\\', Path.DirectorySeparatorChar));
+        }
+        public static Project LoadProject(string projectPath, string configuration = null, string platform = null)
         {
             var popt = new ProjectOptions();
             if (configuration != null || platform != null)
@@ -47,7 +37,7 @@ namespace MSBuild.SolutionSdk.Tasks
                 }
             }
             var collection = new ProjectCollection(popt.GlobalProperties);
-            return collection.LoadProject(item.EvaluatedInclude.Replace('\\', Path.DirectorySeparatorChar));
+            return collection.LoadProject(projectPath);
         }
     }
 }

@@ -17,11 +17,12 @@ namespace MSBuild.SolutionSdk.Tasks
         public ITaskItem[] SlnProjects { get; set; }
         [Output]
         public ITaskItem[] OutputSolutionItems { get; set; }
-        ITaskItem CreateSolutionItem(ProjectItem projectItem)
+        ITaskItem CreateSolutionItem(ProjectItem projectItem, ITaskItem slnproj)
         {
             var item = new TaskItem(projectItem.EvaluatedInclude);
             item.SetMetadata("SolutionFolder", projectItem.GetMetadataValue("SolutionFolder"));
             item.SetMetadata("SolutionFile", projectItem.Project.FullPath);
+            item.SetMetadata("SlnProj", slnproj.ItemSpec);
             return item;
         }
         IEnumerable<ITaskItem> GetSolutionItems()
@@ -31,7 +32,7 @@ namespace MSBuild.SolutionSdk.Tasks
                 var project = ProjectUtil.LoadProject(slnproj);
                 foreach(var item in project.GetItems("SolutionItem"))
                 {
-                    yield return CreateSolutionItem(item);
+                    yield return CreateSolutionItem(item, slnproj);
                 }
             }
         }

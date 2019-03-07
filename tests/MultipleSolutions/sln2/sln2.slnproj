@@ -1,0 +1,5 @@
+<Project Sdk="MSBuild.SolutionSdk">
+    <ItemGroup>
+        <SolutionItem Include="x.txt"/>
+    </ItemGroup>
+</Project>
