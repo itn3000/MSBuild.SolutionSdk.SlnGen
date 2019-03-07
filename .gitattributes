@@ -1,0 +1,5 @@
+*.sh eol=lf
+*.cs text=auto
+*.sln text=auto
+*.cake text=auto
+* text=auto
