@@ -4,11 +4,11 @@ init:
 configuration: Release
 image: Visual Studio 2017
 build_script:
-  pwsh: .\build.ps1 -Configuration Release
+  pwsh: .\build.ps1 -Configuration Release -Target Build
 test_script:
   pwsh: .\build.ps1
 artifacts:
-  - path: "src/**/*.nupkg"
+  - path: "src/**/Release/*.nupkg"
     name: NuGetPackages
 nuget:
   project_feed: true
