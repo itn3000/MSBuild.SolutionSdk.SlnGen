@@ -120,3 +120,8 @@ This can be added the following metadata.
 * SolutionFolder
     * logical solution folder path separated by `/` or `\`
     * if not set, all items are located in "Solution Items"
+
+# Acknowledgments
+
+This project is inspired by [MSBuild.SolutionSdk](https://github.com/JeffCyr/MSBuild.SolutionSdk) and [SlnGen](https://github.com/jeffkl/SlnGen).
+Thanks a lot for great work.
