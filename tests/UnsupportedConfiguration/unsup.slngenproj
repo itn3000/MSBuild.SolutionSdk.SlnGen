@@ -1,0 +1,7 @@
+<Project>
+  <Import Project="..\..\src\MSBuild.SolutionSdk.SlnGen\Sdk\Sdk.props"/>
+  <PropertyGroup>
+    <SlnGenAssemblyFilePath>$(MSBuildThisFileDirectory)..\..\src\bin\Debug\MSBuild.SolutionSdk.SlnGen.dll</SlnGenAssemblyFilePath>
+  </PropertyGroup>
+  <Import Project="..\..\src\MSBuild.SolutionSdk.SlnGen\Sdk\Sdk.targets" />
+</Project>

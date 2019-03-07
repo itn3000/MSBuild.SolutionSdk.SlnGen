@@ -23,7 +23,7 @@ namespace MSBuild.SolutionSdk.Tasks
         public ITaskItem[] OutputProjects { get; set; }
 
 
-        ITaskItem CreateProjectMetadata(Project project, ProjectItem projectTaskItem, string configuration, string platform)
+        ITaskItem CreateProjectMetadata(ITaskItem slnproj, Project project, ProjectItem projectTaskItem, string configuration, string platform)
         {
             var item = new TaskItem(project.FullPath);
             item.SetMetadata("OriginalItemSpec", projectTaskItem.EvaluatedInclude);
@@ -50,6 +50,7 @@ namespace MSBuild.SolutionSdk.Tasks
             item.SetMetadata("DependsOn", projectTaskItem.GetMetadataValue("DependsOn"));
             item.SetMetadata("OriginalConfiguration", configuration);
             item.SetMetadata("OriginalPlatform", platform);
+            item.SetMetadata("SlnProject", slnproj.ItemSpec);
             return item;
         }
 
@@ -67,7 +68,7 @@ namespace MSBuild.SolutionSdk.Tasks
                             var projectConfiguration = projectItem.GetMetadataValue("Configuration");
                             var projectPlatform = projectItem.GetMetadataValue("Platform");
                             var projectInstance = ProjectUtil.LoadProject(projectItem, projectConfiguration, projectPlatform);
-                            yield return CreateProjectMetadata(projectInstance, projectItem, configuration.ItemSpec, platform.ItemSpec);
+                            yield return CreateProjectMetadata(slnproj, projectInstance, projectItem, configuration.ItemSpec, platform.ItemSpec);
                         }
                     }
                 }

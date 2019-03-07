@@ -1,0 +1,5 @@
+<Project>
+    <ItemGroup>
+        <PackageReference Include="MSBuild.SolutionSdk.Hook" Version="0.1.0" />
+    </ItemGroup>
+</Project>

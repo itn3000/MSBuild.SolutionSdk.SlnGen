@@ -28,7 +28,8 @@ namespace MSBuild.SolutionSdk.Tasks
                     popt.GlobalProperties["Platform"] = platform;
                 }
             }
-            return Project.FromFile(slnproj.ItemSpec.Replace('\\', Path.DirectorySeparatorChar), popt);
+            var collection = new ProjectCollection(popt.GlobalProperties);
+            return collection.LoadProject(slnproj.ItemSpec.Replace('\\', Path.DirectorySeparatorChar));
         }
         public static Project LoadProject(ProjectItem item, string configuration = null, string platform = null)
         {
@@ -45,7 +46,8 @@ namespace MSBuild.SolutionSdk.Tasks
                     popt.GlobalProperties["Platform"] = platform;
                 }
             }
-            return Project.FromFile(item.EvaluatedInclude.Replace('\\', Path.DirectorySeparatorChar), popt);
+            var collection = new ProjectCollection(popt.GlobalProperties);
+            return collection.LoadProject(item.EvaluatedInclude.Replace('\\', Path.DirectorySeparatorChar));
         }
     }
 }

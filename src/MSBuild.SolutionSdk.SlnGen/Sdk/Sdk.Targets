@@ -3,6 +3,9 @@
         <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
     </PropertyGroup>
 
+    <ItemGroup Condition="'$(EnableDefaultProjectItems)' == 'true'">
+        <SlnProj Include="$(DefaultProjectItemsPattern)"/>
+    </ItemGroup>
     <UsingTask TaskName="GenerateSln" AssemblyFile="$(SlnGenAssemblyFilePath)"/>
     <UsingTask TaskName="CollectProjectMetadata" AssemblyFile="$(SlnGenAssemblyFilePath)"/>
     <UsingTask TaskName="CollectSolutionItem" AssemblyFile="$(SlnGenAssemblyFilePath)"/>

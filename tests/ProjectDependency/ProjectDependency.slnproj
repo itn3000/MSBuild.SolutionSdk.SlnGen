@@ -1,10 +1,4 @@
-<Project>
-  <Import Project="..\..\src\MSBuild.SolutionSdk\Sdk\Sdk.props" />
-
-  <PropertyGroup>
-    <SolutionSdkTasksAssembly>$(MSBuildThisFileDirectory)..\..\src\bin\Debug\MSBuild.SolutionSdk.dll</SolutionSdkTasksAssembly>
-  </PropertyGroup>
-
+<Project Sdk="MSBuild.SolutionSdk/0.1.0">
   <PropertyGroup>
     <EnableDefaultProjectItems>false</EnableDefaultProjectItems>
   </PropertyGroup>
@@ -13,6 +7,4 @@
     <Project Include="ProjectB\ProjectB.csproj" DependsOn="ProjectA" />
     <Project Include="ProjectA\ProjectA.csproj" />
   </ItemGroup>
-
-  <Import Project="..\..\src\MSBuild.SolutionSdk\Sdk\Sdk.targets" />
 </Project>

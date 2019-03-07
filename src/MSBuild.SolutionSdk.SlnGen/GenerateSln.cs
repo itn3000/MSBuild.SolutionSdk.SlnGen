@@ -16,6 +16,7 @@ namespace MSBuild.SolutionSdk.Tasks
         public ITaskItem ProjectName { get; set; }
         [Required]
         public ITaskItem ProjectDirectory { get; set; }
+        public ITaskItem SolutionOutputDirectory { get; set; }
         [Required]
         public ITaskItem[] ProjectMetaData { get; set; }
         // [Required]
@@ -146,6 +147,11 @@ namespace MSBuild.SolutionSdk.Tasks
         }
         (SlnItem[], Dictionary<string, SlnFolder>) GetSolutionItems(Dictionary<string, SlnFolder> slnFolders)
         {
+            slnFolders = slnFolders ?? new Dictionary<string, SlnFolder>();
+            if (SolutionItems == null)
+            {
+                return (Array.Empty<SlnItem>(), new Dictionary<string, SlnFolder>());
+            }
             return (SolutionItems.Select(x =>
             {
                 string slnFolderName = x.GetMetadata("SolutionFolder");
@@ -162,54 +168,108 @@ namespace MSBuild.SolutionSdk.Tasks
                 return new SlnItem(x.ItemSpec, slnFolders[slnFolderName]);
             }).ToArray(), slnFolders);
         }
+        void GenerateSlnInternal(string slnProj, IEnumerable<ITaskItem> projectMetaData)
+        {
+            var configurations = projectMetaData.SelectMany(x => ExtractConfigurationsFromProject(x)).Distinct().ToArray();
+            var platforms = projectMetaData.SelectMany(x => ExtractPlatformsFromProject(x)).Distinct().ToArray();
+            if (Platforms != null && Platforms.Length != 0)
+            {
+                platforms = Platforms.Select(x => x.ItemSpec).ToArray();
+            }
+            if (Configurations != null && Configurations.Length != 0)
+            {
+                configurations = Configurations.Select(x => x.ItemSpec).ToArray();
+            }
+            Log.LogMessage("configurations='{0}', platforms='{1}'",
+                string.Join(";", configurations),
+                string.Join(";", platforms));
+            var slnFile = new SlnFile("12.0", VisualStudioVersion?.ItemSpec, MinVisualStudioVersion?.ItemSpec, configurations, platforms);
+            var slnFileName = Path.GetFileNameWithoutExtension(slnProj) + ".sln";
+            var (projects, configurationMap, platformMap) = GetProjects(configurations, platforms);
+            foreach (var proj in projects)
+            {
+                Log.LogMessage("projName = {0}", proj.Name);
+            }
+            foreach (var kv in platformMap)
+            {
+                Log.LogMessage("platformmap = {0}={1}", kv.Key, kv.Value);
+            }
+            foreach (var kv in configurationMap)
+            {
+                Log.LogMessage("configurationmap = {0}={1}", kv.Key, kv.Value);
+            }
+            slnFile.AddProjects(projects);
+            SlnItem[] solutionItems;
+            Dictionary<string, SlnFolder> slnFolders = new Dictionary<string, SlnFolder>();
+            (solutionItems, slnFolders) = GetSolutionItems(slnFolders);
+            slnFile.UpdateSolutionFolder(slnFolders.Values);
+            Log.LogMessage("foldernum is {0}, itemsnum is {1}", slnFolders.Count, solutionItems.Length);
+            foreach (var solutionItem in solutionItems)
+            {
+                Log.LogMessage("{0} = {1}, {2}", solutionItem.FullPath, solutionItem.Folder.FolderGuid, solutionItem.Folder.FullPath);
+            }
+            foreach (var slnFolder in slnFolders)
+            {
+                Log.LogMessage("{0} = {1}", slnFolder.Key, slnFolder.Value.FolderGuid);
+            }
+            slnFile.AddSolutionItems(solutionItems);
+            var slnOutputPath = SolutionOutputDirectory != null && string.IsNullOrEmpty(SolutionOutputDirectory.ItemSpec) ?
+                Path.Combine(SolutionOutputDirectory.ItemSpec, slnFileName) :
+                Path.Combine(ProjectDirectory.ItemSpec, Path.GetDirectoryName(slnProj), slnFileName);
+            slnFile.Save(slnOutputPath, false, configurationMap, platformMap);
+        }
         public override bool Execute()
         {
             if (ProjectMetaData != null)
             {
-                var configurations = ProjectMetaData.SelectMany(x => ExtractConfigurationsFromProject(x)).Distinct().ToArray();
-                var platforms = ProjectMetaData.SelectMany(x => ExtractPlatformsFromProject(x)).Distinct().ToArray();
-                if (Platforms != null && Platforms.Length != 0)
+                foreach(var grp in ProjectMetaData.GroupBy(x => x.GetMetadata("SlnProject")))
                 {
-                    platforms = Platforms.Select(x => x.ItemSpec).ToArray();
+                    GenerateSlnInternal(grp.Key, grp);
                 }
-                if (Configurations != null && Configurations.Length != 0)
-                {
-                    configurations = Configurations.Select(x => x.ItemSpec).ToArray();
-                }
-                Log.LogMessage("configurations='{0}', platforms='{1}'",
-                    string.Join(";", configurations),
-                    string.Join(";", platforms));
-                var slnFile = new SlnFile("12.0", VisualStudioVersion?.ItemSpec, MinVisualStudioVersion?.ItemSpec, configurations, platforms);
-                var slnFileName = Path.GetFileNameWithoutExtension(ProjectName.ItemSpec) + ".sln";
-                var (projects, configurationMap, platformMap) = GetProjects(configurations, platforms);
-                foreach (var proj in projects)
-                {
-                    Log.LogMessage("projName = {0}", proj.Name);
-                }
-                foreach (var kv in platformMap)
-                {
-                    Log.LogMessage("platformmap = {0}={1}", kv.Key, kv.Value);
-                }
-                foreach (var kv in configurationMap)
-                {
-                    Log.LogMessage("configurationmap = {0}={1}", kv.Key, kv.Value);
-                }
-                slnFile.AddProjects(projects);
-                SlnItem[] solutionItems;
-                Dictionary<string, SlnFolder> slnFolders = new Dictionary<string, SlnFolder>();
-                (solutionItems, slnFolders) = GetSolutionItems(slnFolders);
-                slnFile.UpdateSolutionFolder(slnFolders.Values);
-                Log.LogMessage("foldernum is {0}, itemsnum is {1}", slnFolders.Count, solutionItems.Length);
-                foreach (var solutionItem in solutionItems)
-                {
-                    Log.LogMessage("{0} = {1}, {2}", solutionItem.FullPath, solutionItem.Folder.FolderGuid, solutionItem.Folder.FullPath);
-                }
-                foreach (var slnFolder in slnFolders)
-                {
-                    Log.LogMessage("{0} = {1}", slnFolder.Key, slnFolder.Value.FolderGuid);
-                }
-                slnFile.AddSolutionItems(solutionItems);
-                slnFile.Save(Path.Combine(ProjectDirectory.ItemSpec, slnFileName), false, configurationMap, platformMap);
+                // var configurations = ProjectMetaData.SelectMany(x => ExtractConfigurationsFromProject(x)).Distinct().ToArray();
+                // var platforms = ProjectMetaData.SelectMany(x => ExtractPlatformsFromProject(x)).Distinct().ToArray();
+                // if (Platforms != null && Platforms.Length != 0)
+                // {
+                //     platforms = Platforms.Select(x => x.ItemSpec).ToArray();
+                // }
+                // if (Configurations != null && Configurations.Length != 0)
+                // {
+                //     configurations = Configurations.Select(x => x.ItemSpec).ToArray();
+                // }
+                // Log.LogMessage("configurations='{0}', platforms='{1}'",
+                //     string.Join(";", configurations),
+                //     string.Join(";", platforms));
+                // var slnFile = new SlnFile("12.0", VisualStudioVersion?.ItemSpec, MinVisualStudioVersion?.ItemSpec, configurations, platforms);
+                // var slnFileName = Path.GetFileNameWithoutExtension(ProjectName.ItemSpec) + ".sln";
+                // var (projects, configurationMap, platformMap) = GetProjects(configurations, platforms);
+                // foreach (var proj in projects)
+                // {
+                //     Log.LogMessage("projName = {0}", proj.Name);
+                // }
+                // foreach (var kv in platformMap)
+                // {
+                //     Log.LogMessage("platformmap = {0}={1}", kv.Key, kv.Value);
+                // }
+                // foreach (var kv in configurationMap)
+                // {
+                //     Log.LogMessage("configurationmap = {0}={1}", kv.Key, kv.Value);
+                // }
+                // slnFile.AddProjects(projects);
+                // SlnItem[] solutionItems;
+                // Dictionary<string, SlnFolder> slnFolders = new Dictionary<string, SlnFolder>();
+                // (solutionItems, slnFolders) = GetSolutionItems(slnFolders);
+                // slnFile.UpdateSolutionFolder(slnFolders.Values);
+                // Log.LogMessage("foldernum is {0}, itemsnum is {1}", slnFolders.Count, solutionItems.Length);
+                // foreach (var solutionItem in solutionItems)
+                // {
+                //     Log.LogMessage("{0} = {1}, {2}", solutionItem.FullPath, solutionItem.Folder.FolderGuid, solutionItem.Folder.FullPath);
+                // }
+                // foreach (var slnFolder in slnFolders)
+                // {
+                //     Log.LogMessage("{0} = {1}", slnFolder.Key, slnFolder.Value.FolderGuid);
+                // }
+                // slnFile.AddSolutionItems(solutionItems);
+                // slnFile.Save(Path.Combine(ProjectDirectory.ItemSpec, slnFileName), false, configurationMap, platformMap);
             }
             else
             {
