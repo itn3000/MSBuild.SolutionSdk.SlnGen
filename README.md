@@ -1,7 +1,7 @@
 # Overview
 
 Tool for creating Visual Studio solution file(sln) from [MSBuild.SolutionSdk](https://github.com/JeffCyr/MSBuild.SolutionSdk).
-This aims to add `*.sln` to `.gitignore` and prevent conflicts with sln files.
+This project aims to prevent conflicts with sln files by add `*.sln` to `.gitignore`.
 
 # How to use
 
