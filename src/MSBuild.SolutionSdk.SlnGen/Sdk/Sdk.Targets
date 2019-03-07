@@ -3,7 +3,7 @@
         <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
     </PropertyGroup>
 
-    <ItemGroup Condition="'$(EnableDefaultProjectItems)' == 'true'">
+    <ItemGroup Condition="'$(EnableDefaultProjectItems.ToLower())' == 'true'">
         <SlnProj Include="$(DefaultProjectItemsPattern)"/>
     </ItemGroup>
     <UsingTask TaskName="GenerateSln" AssemblyFile="$(SlnGenAssemblyFilePath)"/>

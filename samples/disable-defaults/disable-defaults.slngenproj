@@ -1,0 +1,8 @@
+<Project Sdk="MSBuild.SolutionSdk.SlnGen/0.1.0">
+    <PropertyGroup>
+        <EnableDefaultProjectItems>false</EnableDefaultProjectItems>
+    </PropertyGroup>
+    <ItemGroup>
+        <SlnProj Include="disable-defaults.slnproj"/>
+    </ItemGroup>
+</Project>

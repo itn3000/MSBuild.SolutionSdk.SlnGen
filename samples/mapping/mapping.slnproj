@@ -1,0 +1,10 @@
+<Project Sdk="MSBuild.SolutionSdk/0.1.0">
+    <ItemGroup>
+        <Project Update="lib1/lib1.csproj" Condition="'$(Configuration)' == 'Debug'">
+            <Configuration>Abc</Configuration>
+        </Project>
+        <Project Update="lib2/lib2.csproj" Condition="'$(Platform)' == 'AnyCPU'">
+            <Platform>x64</Platform>
+        </Project>
+    </ItemGroup>
+</Project>
