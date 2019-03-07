@@ -1,5 +1,4 @@
 ﻿using System;
-using ProjectA;
 
 namespace ProjectB
 {
@@ -7,7 +6,6 @@ namespace ProjectB
     {
         public static void Test()
         {
-            ClassA.Test();
         }
     }
 }

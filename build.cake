@@ -37,6 +37,25 @@ Task("Build")
     });
 Task("Test")
     .IsDependentOn("Build");
+Task("Test.HelloWorld")
+    .IsDependeeOf("Test")
+    .Does(() =>
+    {
+        var projectDirectory = "./tests/HelloWorld";
+        var projectFilePath = IO.Path.Combine(projectDirectory, "HelloWorld.slngenproj");
+        MSBuild(IO.Path.Combine(projectDirectory, "HelloWorld.slngenproj"), (setting) =>
+        {
+            setting.SetConfiguration(configuration)
+                .SetVerbosity(Verbosity.Normal)
+                .WithTarget("SlnGen");
+        });
+        var slnFile = "HelloWorld.sln";
+        var slnFilePath = IO.Path.Combine(projectDirectory, slnFile);
+        if(!IO.File.Exists(slnFilePath))
+        {
+            throw new InvalidOperationException(string.Format("{0} is not created", slnFile));
+        }
+    });
 Task("Test.MultipleSolutions")
     .IsDependeeOf("Test")
     .Does(() =>
