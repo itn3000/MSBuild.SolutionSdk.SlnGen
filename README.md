@@ -27,7 +27,7 @@ This project is still WIP, so spec may be changed.
     ```
 4. execute generating sln target by following command
     * by dotnet-sdk, execute `dotnet msbuild [path/to/slngenproj]`
-    * by Visual Studio, execute `msbuild [path/to/slngenproj]`
+    * by Visual Studio, execute `msbuild [path/to/slngenproj]` from Visual Studio's developer command prompt
     * **warning: if `sln` file have been already existing, it will be overwritten.**
 
 Then you can see sln files in next to `slnproj` files.
@@ -62,6 +62,11 @@ note: wild card is allowed in project path.
     </ItemGroup>
 </Project>
 ```
+
+# Warning
+
+If slnproj includes projects which is not recognized by dotnet sdk(like vcxproj),
+you must execute via Visual Studio's developer command prompt.
 
 # References
 
