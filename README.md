@@ -2,6 +2,7 @@
 
 Tool for creating Visual Studio solution file(sln) from [MSBuild.SolutionSdk](https://github.com/JeffCyr/MSBuild.SolutionSdk).
 This project aims to prevent conflicts with sln files by add `*.sln` to `.gitignore`.
+This project is still WIP, so spec may be changed.
 
 # How to use
 
@@ -11,7 +12,7 @@ This project aims to prevent conflicts with sln files by add `*.sln` to `.gitign
     * dotnet-sdk 2.1.300 or later
     * Visual Studio 2017 or later
 
-## Steps from scratch
+## Steps from scratch(WIP)
 
 1. creating any project
     `dotnet new [projecttype]` or by Visual Studio
