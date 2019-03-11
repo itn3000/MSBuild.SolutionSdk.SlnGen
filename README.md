@@ -100,7 +100,8 @@ followings can be added to `PropertyGroup` in `slngenproj`
 
 ### EnableDefaultProjectItems
 
-If `true`(ignore case) is set, default `SlnProj` inclusion is disabled.
+If `true`(ignore case) is set, default `SlnProj` inclusion is enabled, if `false`, disabled.
+default is `true`.
 
 ## affected MSBuild items in `slnproj`
 
