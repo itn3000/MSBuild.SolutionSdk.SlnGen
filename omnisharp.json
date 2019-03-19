@@ -1,0 +1,10 @@
+{
+    "fileOptions":{
+        "userExcludeSearchPatterns":[
+            "samples\\**\\*",
+            "tests\\**\\*",
+            "samples/**/*",
+            "tests/**/*"
+        ]
+    }
+}
